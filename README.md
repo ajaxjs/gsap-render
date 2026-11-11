@@ -1,5 +1,7 @@
 # gsap-render
 
+**Demo:** https://ajaxjs.github.io/gsap-render/
+
 用 HTML 属性声明 GSAP 动画的渲染器。框架无关，属性值永远是纯数据。
 
 ```html
@@ -132,4 +134,19 @@ GsapRender.register(InViewRender)
 
 v1 已实现：`from` / `to` / `from-to` / `timeline` / `at` / `config` / `stagger` / 适配器注册 / SplitText / ScrollTrigger / InView / `ready` / `refresh` / `destroy` / 警告体系。
 
-未做（接口预留）：`in-view`（IO 版入场触发器）、MutationObserver 自动重扫、`prefers-reduced-motion` 降级。
+未做（接口预留）：MutationObserver 自动重扫、`prefers-reduced-motion` 降级、W012 / W015 两个次要警告。
+
+## 发布 Demo
+
+```bash
+npm run deploy          # build:pages + 推送到 gh-pages 分支
+```
+
+`build:pages` 会以 `/gsap-render/` 为 base 构建，并生成 `404.html`（SPA 深链接回退）与 `.nojekyll`。
+
+网络无法直连 `git push` 时，可以用 API 版本：
+
+```bash
+node scripts/publish-api.mjs        # 发布 main
+node scripts/publish-api.mjs pages  # 发布 dist 到 gh-pages
+```
