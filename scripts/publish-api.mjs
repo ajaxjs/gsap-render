@@ -106,6 +106,15 @@ const mode = process.argv[2] || 'main'
 if (mode === 'pages') {
   const files = walk('dist')
   await publishBranch('gh-pages', files, 'deploy demo', [])
+} else if (mode === 'tag') {
+  const ref = await api(`/repos/${OWNER}/${REPO}/git/ref/heads/main`)
+  try {
+    await api(`/repos/${OWNER}/${REPO}/git/refs`, 'POST', { ref: 'refs/tags/v0.1.0', sha: ref.object.sha })
+    console.log(`tag v0.1.0 -> ${ref.object.sha.slice(0, 7)}`)
+  } catch (error) {
+    if (!String(error.message).includes('422')) throw error
+    console.log('tag v0.1.0 already exists')
+  }
 } else {
   const parent = await ensureInitialCommit()
   await publishBranch('main', tracked, 'feat: declarative GSAP renderer + Vue demo', [parent])
