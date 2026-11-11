@@ -1,5 +1,6 @@
-import { gsap } from 'gsap'
+import { gsap } from './gsap'
 import { buildTree, type BuildContext, type PluginRuntime } from './build'
+import { configureGsap } from './gsap'
 import { isPlainObject } from './parse'
 import { instantiate, registerPlugin, registeredPlugins } from './registry'
 import { scan, type ScanResult } from './scan'
@@ -79,6 +80,11 @@ export class GsapRender {
 
   static register(plugin: RenderPlugin): void {
     registerPlugin(plugin)
+  }
+
+  /** 显式指定 GSAP 实例（iframe / 多副本 / 延迟加载时用） */
+  static configure(options: { gsap?: typeof import('gsap').gsap }): void {
+    if (options.gsap) configureGsap(options.gsap)
   }
 
   static get(root: Element): GsapRender | undefined {

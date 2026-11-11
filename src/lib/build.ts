@@ -1,4 +1,4 @@
-import { gsap } from 'gsap'
+import { gsap } from './gsap'
 import { isPlainObject } from './parse'
 import { mergeAttrs, type TweenSpec } from './merge'
 import type { AttrMap, ScanResult } from './scan'

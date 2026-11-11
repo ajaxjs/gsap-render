@@ -31,6 +31,7 @@ src/lib/           核心库（无 Vue 依赖）
   plugins/         SplitText / ScrollTrigger 适配器
 src/demo/          Vue 3 + shadcn-vue 演示站（带代码编辑器）
 src/play/          预览 iframe 的独立入口（库在这里跑）
+dist-lib/          库产物：ESM + UMD（GSAP 外置），CDN 直接引用
 docs/              规范与适配器文档
 test/              纯函数单测（vitest）
 scripts/shot.mjs   CDP 截图脚本（验证用）
@@ -42,26 +43,88 @@ scripts/shot.mjs   CDP 截图脚本（验证用）
 npm install
 npm run dev        # http://localhost:5173
 npm run test       # 解析 / 合并单测
-npm run build      # vue-tsc + vite build
+npm run build      # vue-tsc + vite build（演示站）
+npm run build:lib  # ESM + UMD（dist-lib/，GSAP 外置）
 ```
 
 演示站每个页面都有 HTML / CSS / JS 三个编辑器标签，改完点「运行」或按 `Ctrl/⌘ + Enter` 重新渲染 iframe。
 
-## 用法
+## 安装与使用
+
+GSAP 是 peer 依赖（`>=3.13`），**一个页面只能有一份**。三种方式任选其一。
+
+### 1. 打包器（npm / GitHub）
+
+```bash
+npm i gsap
+npm i github:ajaxjs/gsap-render
+```
 
 ```js
 import { gsap } from 'gsap'
-import { SplitText } from 'gsap/SplitText'
-import { GsapRender } from './src/lib'
-import { SplitTextRender } from './src/lib/split-text'
+import { ScrollTrigger } from 'gsap/ScrollTrigger'
+import { GsapRender } from 'gsap-render'
+import { ScrollTriggerRender } from 'gsap-render/scroll-trigger'
 
-gsap.registerPlugin(SplitText)
-GsapRender.register(SplitTextRender) // 之后所有实例都支持 split-*
+gsap.registerPlugin(ScrollTrigger)
+GsapRender.register(ScrollTriggerRender) // 之后所有实例都支持 scroll
 
 const gs = new GsapRender('#stage', { debug: true })
 await gs.ready
 gs.play()
 ```
+
+子路径导出：`gsap-render/split-text`、`gsap-render/scroll-trigger`、`gsap-render/in-view`。
+
+### 2. CDN `<script>`（UMD）
+
+```html
+<!-- 1. GSAP 核心 -->
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.15.1/dist/gsap.min.js"></script>
+<!-- 2. 用到的插件（顺序在核心之后） -->
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.15.1/dist/ScrollTrigger.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.15.1/dist/SplitText.min.js"></script>
+<!-- 3. 渲染器 -->
+<script src="https://cdn.jsdelivr.net/gh/ajaxjs/gsap-render@v0.1.0/dist-lib/gsap-render.umd.js"></script>
+
+<div id="stage" timeline>
+  <h1 from="{opacity:0, y:-40}">Hello</h1>
+</div>
+
+<script>
+  const { GsapRender, ScrollTriggerRender, SplitTextRender } = GsapRenderKit
+  GsapRender.register(ScrollTriggerRender)
+  GsapRender.register(SplitTextRender)
+
+  new GsapRender('#stage')
+</script>
+```
+
+UMD 构建不会打包 GSAP，运行时直接读 `window.gsap` / `window.SplitText` / `window.ScrollTrigger`。
+
+### 3. CDN ESM + import map
+
+```html
+<script type="importmap">
+  {
+    "imports": {
+      "gsap": "https://cdn.jsdelivr.net/npm/gsap@3.15.1/index.js",
+      "gsap/": "https://cdn.jsdelivr.net/npm/gsap@3.15.1/"
+    }
+  }
+</script>
+
+<script type="module">
+  import { GsapRender } from 'https://cdn.jsdelivr.net/gh/ajaxjs/gsap-render@v0.1.0/dist-lib/gsap-render.es.js'
+  import { ScrollTriggerRender } from 'https://cdn.jsdelivr.net/gh/ajaxjs/gsap-render@v0.1.0/dist-lib/scroll-trigger.es.js'
+
+  const gs = new GsapRender('#stage')
+</script>
+```
+
+import map 保证库里的 `import 'gsap'` 和页面用的是同一份实例。
+
+> **显式指定实例**：页面里有多份 GSAP、或元素在 iframe 里时，用 `GsapRender.configure({ gsap: window.gsap })` 覆盖。
 
 ### 属性
 

@@ -4,11 +4,35 @@
   "private": true,
   "type": "module",
   "description": "Declarative GSAP renderer driven by HTML attributes",
-  "main": "src/lib/index.ts",
+  "main": "./dist-lib/gsap-render.umd.js",
+  "module": "./dist-lib/gsap-render.es.js",
+  "exports": {
+    ".": {
+      "import": "./dist-lib/gsap-render.es.js",
+      "require": "./dist-lib/gsap-render.umd.js"
+    },
+    "./split-text": {
+      "import": "./dist-lib/split-text.es.js"
+    },
+    "./scroll-trigger": {
+      "import": "./dist-lib/scroll-trigger.es.js"
+    },
+    "./in-view": {
+      "import": "./dist-lib/in-view.es.js"
+    }
+  },
+  "files": [
+    "dist-lib",
+    "src/lib",
+    "docs",
+    "README.md",
+    "LICENSE"
+  ],
   "scripts": {
     "dev": "vite",
     "build": "vue-tsc --noEmit -p tsconfig.json && vite build",
     "build:pages": "node scripts/build-pages.mjs",
+    "build:lib": "node scripts/build-lib.mjs",
     "deploy": "npm run build:pages && gh-pages -d dist",
     "preview": "vite preview",
     "test": "vitest run"
@@ -19,6 +43,9 @@
     "declarative"
   ],
   "license": "MIT",
+  "peerDependencies": {
+    "gsap": ">=3.13"
+  },
   "dependencies": {
     "@codemirror/lang-css": "^6.3.1",
     "@codemirror/lang-html": "^6.4.12",
@@ -29,7 +56,6 @@
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "codemirror": "^6.0.2",
-    "gsap": "^3.15.1",
     "reka-ui": "^2.11.0",
     "tailwind-merge": "^3.7.0",
     "vue": "^3.5.45",
@@ -40,6 +66,7 @@
     "@types/node": "^26.6.6",
     "@vitejs/plugin-vue": "^6.0.10",
     "gh-pages": "^6.3.0",
+    "gsap": "^3.15.1",
     "jsdom": "^31.0.0",
     "tailwindcss": "^4.3.5",
     "tw-animate-css": "^1.4.0",

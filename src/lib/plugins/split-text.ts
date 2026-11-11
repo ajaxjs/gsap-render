@@ -1,4 +1,4 @@
-import { gsap } from 'gsap'
+import { gsap } from '../gsap'
 import { SplitText } from 'gsap/SplitText'
 import { mergePhase } from '../merge'
 import { isPlainObject } from '../parse'

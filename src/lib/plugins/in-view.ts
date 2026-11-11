@@ -1,4 +1,4 @@
-import { gsap } from 'gsap'
+import { gsap } from '../gsap'
 import { isPlainObject } from '../parse'
 import type { MountContext, PluginImpl, RenderPlugin } from '../types'
 
