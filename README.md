@@ -85,7 +85,7 @@ gs.play()
 <script src="https://cdn.jsdelivr.net/npm/gsap@3.15.1/dist/ScrollTrigger.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/gsap@3.15.1/dist/SplitText.min.js"></script>
 <!-- 3. 渲染器 -->
-<script src="https://cdn.jsdelivr.net/gh/ajaxjs/gsap-render@v0.2.0/dist-lib/gsap-render.umd.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/ajaxjs/gsap-render@v0.2.1/dist-lib/gsap-render.umd.js"></script>
 
 <div id="stage" timeline>
   <h1 from="{opacity:0, y:-40}">Hello</h1>
@@ -115,8 +115,8 @@ UMD 构建不会打包 GSAP，运行时直接读 `window.gsap` / `window.SplitTe
 </script>
 
 <script type="module">
-  import { GsapRender } from 'https://cdn.jsdelivr.net/gh/ajaxjs/gsap-render@v0.2.0/dist-lib/gsap-render.es.js'
-  import { ScrollTriggerRender } from 'https://cdn.jsdelivr.net/gh/ajaxjs/gsap-render@v0.2.0/dist-lib/scroll-trigger.es.js'
+  import { GsapRender } from 'https://cdn.jsdelivr.net/gh/ajaxjs/gsap-render@v0.2.1/dist-lib/gsap-render.es.js'
+  import { ScrollTriggerRender } from 'https://cdn.jsdelivr.net/gh/ajaxjs/gsap-render@v0.2.1/dist-lib/scroll-trigger.es.js'
 
   const gs = new GsapRender('#stage')
 </script>
@@ -184,6 +184,18 @@ GsapRender.register(InViewRender)
 ```
 
 零依赖（IntersectionObserver）。`once` 默认 `true`，`reverse: true` 时离开视口反向播放；需要 `scrub` / `pin` 时改用 `scroll`。
+
+### 交互
+
+```html
+<button hover="{scale:1.05}" press="{scale:0.97}"
+        click="[{scale:1.1,duration:0.12},{scale:1,duration:0.3}]">Card</button>
+
+<button click-fire="['#dialog','show']">Open</button>
+<div id="dialog" class="hidden" show="{display:'flex',scale:1}" hide="{scale:0.9,opacity:0}"></div>
+```
+
+`hover` / `press` 是可逆状态（默认 100ms），`click` 是一次性；`*-fire` 可以重放目标的 `to` / `from` / `from-to`，或同时触发多个目标。详见 [docs/Interactions.md](docs/Interactions.md)。
 
 ## 警告
 

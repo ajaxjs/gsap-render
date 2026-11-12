@@ -56,6 +56,7 @@
 - 按下 → 播放 `press`；松开 → 反向。
 - **状态互斥**：`press > hover > idle`。按下时先反向 hover 再播放 press；松开时先反向 press，若仍悬停再播放 hover。
 - 数组状态同样用正向 / 反向播放，因此天然可逆。
+- **默认时长 0.1s**：`hover` / `press` 未写 `duration` 时用 100ms，避免交互显得笨重；单个步骤里写 `duration` 或全局 `config.defaults.duration` 可以覆盖。
 
 事件：
 
@@ -103,7 +104,8 @@
 <button click-fire="['#dialog1','show']">打开</button>
 <button click-fire="['#dialog1',{scale:1,duration:.4}]">用参数打开</button>
 <button hover-fire="['#tip','show','hide']">悬停提示</button>
-<button click-fire="[['#a','hide'],['#b','show']]">切换</button>
+<button click-fire="['.path','to']">再跑一次</button>
+<button click-fire="[['.a','to'],['.b','to']]">同时触发两个</button>
 ```
 
 - **目标**：root 作用域内选择器；找不到再查 `document`；支持 `self`。匹配多个则全部执行。

@@ -320,11 +320,11 @@ export class InteractionController {
     if (prev === 'hover') record.hoverTl?.reverse()
 
     if (next === 'press' && record.press) {
-      record.pressTl ??= this.makeTimeline(record.el, record.press)
+      record.pressTl ??= this.makeTimeline(record.el, record.press, undefined, { duration: 0.1 })
       record.pressTl.play()
     }
     if (next === 'hover' && record.hover) {
-      record.hoverTl ??= this.makeTimeline(record.el, record.hover)
+      record.hoverTl ??= this.makeTimeline(record.el, record.hover, undefined, { duration: 0.1 })
       record.hoverTl.play()
     }
   }
@@ -346,9 +346,14 @@ export class InteractionController {
     }
   }
 
-  private makeTimeline(el: Element, steps: Vars[], onComplete?: () => void): gsap.core.Timeline {
+  private makeTimeline(
+    el: Element,
+    steps: Vars[],
+    onComplete?: () => void,
+    baseVars: Vars = {},
+  ): gsap.core.Timeline {
     const tl = gsap.timeline({ paused: true, onComplete })
-    for (const step of steps) tl.to(el, { ...this.defaults, ...step })
+    for (const step of steps) tl.to(el, { ...this.defaults, ...baseVars, ...step })
     return tl
   }
 

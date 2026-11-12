@@ -357,7 +357,7 @@ var O = class {
 	setState(e, t) {
 		if (e.state === t) return;
 		let n = e.state;
-		e.state = t, n === "press" && e.pressTl?.reverse(), n === "hover" && e.hoverTl?.reverse(), t === "press" && e.press && (e.pressTl ??= this.makeTimeline(e.el, e.press), e.pressTl.play()), t === "hover" && e.hover && (e.hoverTl ??= this.makeTimeline(e.el, e.hover), e.hoverTl.play());
+		e.state = t, n === "press" && e.pressTl?.reverse(), n === "hover" && e.hoverTl?.reverse(), t === "press" && e.press && (e.pressTl ??= this.makeTimeline(e.el, e.press, void 0, { duration: .1 }), e.pressTl.play()), t === "hover" && e.hover && (e.hoverTl ??= this.makeTimeline(e.el, e.hover, void 0, { duration: .1 }), e.hoverTl.play());
 	}
 	playClick(e) {
 		e.click && (e.clickTl ??= this.makeTimeline(e.el, e.click, () => this.restoreState(e)), e.clickTl.restart());
@@ -366,16 +366,17 @@ var O = class {
 		let t = e.state === "press" ? e.pressTl : e.state === "hover" ? e.hoverTl : void 0;
 		t && (t.progress() === 1 ? (t.progress(0), t.progress(1)) : t.play());
 	}
-	makeTimeline(t, n, r) {
-		let i = e.timeline({
+	makeTimeline(t, n, r, i = {}) {
+		let a = e.timeline({
 			paused: !0,
 			onComplete: r
 		});
-		for (let e of n) i.to(t, {
+		for (let e of n) a.to(t, {
 			...this.defaults,
+			...i,
 			...e
 		});
-		return i;
+		return a;
 	}
 	runFire(e, t, n = "enter") {
 		if (t?.length) for (let r of t) {
