@@ -1,6 +1,21 @@
 import type { PluginImpl, RenderPlugin } from './types'
 
-export const RESERVED_ATTRS = new Set(['from', 'to', 'from-to', 'timeline', 'config', 'at'])
+export const RESERVED_ATTRS = new Set([
+  'from',
+  'to',
+  'from-to',
+  'timeline',
+  'config',
+  'at',
+  'hover',
+  'press',
+  'click',
+  'show',
+  'hide',
+  'hover-fire',
+  'press-fire',
+  'click-fire',
+])
 
 const registry = new Map<string, RenderPlugin>()
 
@@ -27,6 +42,8 @@ export function instantiate(plugin: RenderPlugin): PluginImpl {
   if (plugin.create) return plugin.create()
   return {
     resolve: (ctx) => plugin.resolve?.(ctx),
+    refresh: () => plugin.refresh?.(),
+    layout: () => plugin.layout?.(),
     destroy: () => plugin.destroy?.(),
   }
 }

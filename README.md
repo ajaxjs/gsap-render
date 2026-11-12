@@ -85,7 +85,7 @@ gs.play()
 <script src="https://cdn.jsdelivr.net/npm/gsap@3.15.1/dist/ScrollTrigger.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/gsap@3.15.1/dist/SplitText.min.js"></script>
 <!-- 3. 渲染器 -->
-<script src="https://cdn.jsdelivr.net/gh/ajaxjs/gsap-render@v0.1.0/dist-lib/gsap-render.umd.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/ajaxjs/gsap-render@v0.2.0/dist-lib/gsap-render.umd.js"></script>
 
 <div id="stage" timeline>
   <h1 from="{opacity:0, y:-40}">Hello</h1>
@@ -115,8 +115,8 @@ UMD 构建不会打包 GSAP，运行时直接读 `window.gsap` / `window.SplitTe
 </script>
 
 <script type="module">
-  import { GsapRender } from 'https://cdn.jsdelivr.net/gh/ajaxjs/gsap-render@v0.1.0/dist-lib/gsap-render.es.js'
-  import { ScrollTriggerRender } from 'https://cdn.jsdelivr.net/gh/ajaxjs/gsap-render@v0.1.0/dist-lib/scroll-trigger.es.js'
+  import { GsapRender } from 'https://cdn.jsdelivr.net/gh/ajaxjs/gsap-render@v0.2.0/dist-lib/gsap-render.es.js'
+  import { ScrollTriggerRender } from 'https://cdn.jsdelivr.net/gh/ajaxjs/gsap-render@v0.2.0/dist-lib/scroll-trigger.es.js'
 
   const gs = new GsapRender('#stage')
 </script>
@@ -137,6 +137,9 @@ import map 保证库里的 `import 'gsap'` 和页面用的是同一份实例。
 | `at` | number / string | 插入位置，支持 GSAP 位置参数 `"<"` `">"` `"<0.08"` |
 | `scroll` | object | ScrollTrigger：`start` / `end` / `scrub` / `pin` / `snap` / `toggleActions` |
 | `in-view` | object | IntersectionObserver 入场：`once` / `reverse` / `rootMargin` / `threshold` |
+| `hover` / `press` / `click` | object \| array | 交互层：悬停 / 按下 / 点击（数组 = 顺序播放） |
+| `show` / `hide` | object \| array | 显示 / 隐藏状态，只被 `*-fire` 调用 |
+| `hover-fire` / `press-fire` / `click-fire` | `[目标, 动作]` | 委托触发其它元素 |
 | `split` / `split-*` | — | SplitText 适配器认领，见文档 |
 
 裸属性与 `data-gsap-*` 都支持，同时存在时前缀优先。
@@ -189,6 +192,7 @@ GsapRender.register(InViewRender)
 ## 文档
 
 - [v1 规范](docs/v1-spec.md)：属性协议、时间轴模型、类 API、警告码
+- [交互层](docs/Interactions.md)：`hover` / `press` / `click` / `show` / `hide` / `*-fire`
 - [SplitText 适配器](docs/Adapter-SplitText.md)：依赖、属性、生命周期、限制
 - [ScrollTrigger 适配器](docs/Adapter-ScrollTrigger.md)：`scroll` 配置、接管机制、pin / scrub
 - [InView 适配器](docs/Adapter-InView.md)：`in-view` 的 `once` / `reverse`、IO 行为

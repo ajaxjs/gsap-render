@@ -117,7 +117,14 @@ function createTween(
   return method === 'from' ? gsap.from(list as any, toVars) : gsap.to(list as any, toVars)
 }
 
-function instantiateCore(el: Element, spec: TweenSpec, ctx: BuildContext): gsap.core.Tween | null {
+function instantiateCore(el: Element, spec: TweenSpec, ctx: BuildContext): gsap.core.Animation | null {
+  if (spec.steps?.length) {
+    const timeline = gsap.timeline()
+    for (const step of spec.steps) {
+      timeline.to(el, { ...ctx.defaults, ...step })
+    }
+    return timeline
+  }
   return createTween(el, spec.method, spec.vars, spec.fromVars, ctx.defaults)
 }
 

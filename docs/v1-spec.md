@@ -8,6 +8,7 @@
 | 文档 | 内容 |
 | --- | --- |
 | `docs/v1-spec.md` | 核心协议、时间轴模型、类 API、警告码（本文） |
+| `docs/Interactions.md` | 交互层：`hover` / `press` / `click` / `show` / `hide` / `*-fire`（主类内建） |
 | `docs/Adapter-SplitText.md` | SplitText 适配器 |
 | `docs/Adapter-<Name>.md` | 后续每个适配器一份，固定小节见 §5.4 |
 
@@ -22,6 +23,7 @@
 - `at` 位置参数、元素 `id` 作为 label
 - `config` 根配置（`paused` / `defaults` / `repeat`）
 - 插件适配器 + SplitText 适配器 + ScrollTrigger 适配器（`scroll`）+ InView 适配器（`in-view`）
+- 交互层（主类内建）：`hover` / `press` / `click` / `show` / `hide` / `*-fire`
 - `destroy` / `refresh` / `ready` / `on()` / 警告体系
 
 **v1 不做**（接口预留）
@@ -53,10 +55,13 @@
 | `timeline` | object 或空 | 本元素开序列容器 + 局部 vars（`paused` / `repeat` / `yoyo` / `stagger`） |
 | `config` | object | 仅根元素有效：master 的 `paused` / `defaults` / `repeat`；非根出现 → **W014** 忽略 |
 | `at` | string \| number | 父容器中的插入位置，默认 `">"`（串行）/ `0`（并行） |
+| `hover` / `press` / `click` | object \| array | 交互层：悬停 / 按下 / 点击，见 `Interactions.md` |
+| `show` / `hide` | object \| array | 交互层：显示 / 隐藏状态，只被 `*-fire` 调用 |
+| `hover-fire` / `press-fire` / `click-fire` | `[目标, 动作, 离开动作?]` | 交互层：委托触发 |
 | `split` / `split-*` | — | SplitText 适配器认领，见 `Adapter-SplitText.md` |
 
 label 直接取元素 `el.id`，不额外定义属性；`at` 可写 `at="intro"`。
-保留字（插件不得认领）：`from` `to` `from-to` `timeline` `config` `at`。
+保留字（插件不得认领）：`from` `to` `from-to` `timeline` `config` `at` `hover` `press` `click` `show` `hide` `hover-fire` `press-fire` `click-fire`。
 
 ### 2.3 值格式（JSON-lite）
 
@@ -201,6 +206,8 @@ interface RenderPlugin {
   resolve(ctx: ResolveContext): void
   mount?(ctx: MountContext): boolean | void  // 返回 false 表示放弃接管
   refresh?(): void
+  /** 页面布局变化（show/hide 完成）后调用，用于刷新 ScrollTrigger / 重新分割文本 */
+  layout?(): void
   destroy?(): void
 }
 
@@ -313,6 +320,15 @@ interface Options {
 | W015 | 同一容器内 id 重复 | 后者覆盖 label |
 | W016 | 适配器 `resolve` 抛错 | 警告 + 跳过该适配器的补间 |
 | W017 | 多个接管型适配器命中同一元素 | 取 `priority` 最高者 |
+| W501 | 交互属性与元素自身 `from`/`to` 动同一属性 | 警告，照常执行 |
+| W502 | 交互元素 `pointer-events:none` / `display:none` | 警告可能永不触发 |
+| W503 | `-fire` 目标选择器找不到元素 | 忽略该次触发 |
+| W504 | fire 了 `show`/`hide` 但目标没声明 | 忽略该次触发 |
+| W505 | 数组为空或含非对象 | 忽略该属性 |
+| W506 | `show` 无法确定 `display`，回退 `block` | 警告 |
+| W507 | `from` / `from-to` 与数组混用 | 忽略该属性 |
+| W508 | 交互元素残留 CSS `transition` | 提示可能双重动画 |
+| W509 | 隐藏元素内使用 `split-*` | 提示显示后会重新分割 |
 
 ### 7.2 错误（抛错）
 
@@ -448,3 +464,4 @@ docs/
 | 11 | 自动刷新只做 `document.fonts.ready` 一次；不默认开 ResizeObserver |
 | 12 | `debug` 门控警告（默认 false），去掉 `silent`；错误 E001/E002 不受影响 |
 | 13 | 增加 `window.__GSAP_RENDER_DEBUG__` 全局逃生开关，与 `debug` 取并集 |
+| 14 | 交互（hover / press / click / show / hide / *-fire）做成主类内建能力，不做成适配器 |

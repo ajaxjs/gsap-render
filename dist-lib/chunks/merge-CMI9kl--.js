@@ -46,8 +46,22 @@ function c(e, n, r, i, o) {
 	};
 }
 var l = (t) => e(t) && Object.keys(t).length > 0;
-function u(t, n, r) {
+function u(t) {
+	return !Array.isArray(t) || t.length === 0 || !t.every(e) ? null : t;
+}
+function d(t, n, r) {
 	let i = t.from?.value, o = t.to?.value, s = t["from-to"]?.value;
+	if (Array.isArray(i) && (n.warn("W507", r, "from 不支持数组写法，已忽略", "from"), i = void 0), Array.isArray(o)) {
+		let e = u(o);
+		if (!e) return n.warn("W505", r, "to 数组必须是非空对象数组，已忽略", "to"), [];
+		l(i) && n.warn("W507", r, "to 使用数组时不能再写 from，from 已忽略", "to");
+		let t = e.map((e) => a({ ...e }, r, "to", n));
+		return [{
+			method: "to",
+			vars: t[0],
+			steps: t
+		}];
+	}
 	if (s !== void 0) {
 		if (!Array.isArray(s) || s.length !== 2 || !e(s[0]) || !e(s[1])) return n.warn("W003", r, "from-to 必须是 [fromVars, toVars] 两个对象", "from-to"), [];
 		if (i !== void 0 || o !== void 0) {
@@ -64,7 +78,7 @@ function u(t, n, r) {
 		vars: a({ ...o }, r, "to", n)
 	}] : [];
 }
-function d(t, n, r, i, o, s) {
+function f(t, n, r, i, o, s) {
 	return r === void 0 ? l(t) && l(n) ? [c(t, n, i, o, s)] : l(t) ? [{
 		method: "from",
 		vars: a({ ...t }, i, o, s)
@@ -73,4 +87,4 @@ function d(t, n, r, i, o, s) {
 		vars: a({ ...n }, i, o, s)
 	}] : [] : !Array.isArray(r) || r.length !== 2 || !e(r[0]) || !e(r[1]) ? (s.warn("W003", i, "from-to 必须是 [fromVars, toVars] 两个对象", o), []) : ((t !== void 0 || n !== void 0) && s.warn("W002", i, "同时存在 from-to，已忽略 from/to", o), [c(r[0], r[1], i, o, s)]);
 }
-export { d as n, u as t };
+export { f as n, u as r, d as t };

@@ -39,6 +39,8 @@ export interface PluginImpl {
   mount?(ctx: MountContext): boolean | void
   /** 核心重建完成后调用（刷新 ScrollTrigger 等） */
   refresh?(): void
+  /** 页面布局变化（show/hide 完成）后调用 */
+  layout?(): void
   destroy?(): void
 }
 
@@ -59,6 +61,7 @@ export interface RenderPlugin {
   resolve?(ctx: ResolveContext): void
   mount?(ctx: MountContext): boolean | void
   refresh?(): void
+  layout?(): void
   destroy?(): void
 }
 

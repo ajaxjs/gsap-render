@@ -102,9 +102,12 @@ export function scan(root: Element, o: ScanOptions): ScanResult {
         o.warn.warn('W001', el, `${lineCol(entry.raw, parsed.error.index)}：${parsed.error.message}`, key)
         continue
       }
-      if ((key === 'from' || key === 'to' || key === 'timeline' || key === 'config') && !isPlainObject(parsed.value)) {
+      const mustBeObject = key === 'from' || key === 'timeline' || key === 'config'
+      const objectValue = isPlainObject(parsed.value)
+      const toArray = key === 'to' && Array.isArray(parsed.value)
+      if ((mustBeObject || key === 'to') && !objectValue && !toArray) {
         broken.add(el)
-        o.warn.warn('W001', el, `${key} 必须是对象`, key)
+        o.warn.warn('W001', el, `${key} 必须是对象${key === 'to' ? '或数组' : ''}`, key)
         continue
       }
       entry.value = parsed.value

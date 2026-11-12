@@ -1,5 +1,6 @@
 import { basic } from './basic'
 import { controlsDemo } from './controls'
+import { interactionDemo } from './interaction'
 import { inViewDemo } from './inview'
 import { prefixDemo } from './prefix'
 import { scrollDemo } from './scroll'
@@ -14,6 +15,7 @@ export const demos: Demo[] = [
   splitDemo,
   scrollDemo,
   inViewDemo,
+  interactionDemo,
   staggerDemo,
   controlsDemo,
   prefixDemo,

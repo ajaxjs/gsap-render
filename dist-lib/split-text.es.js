@@ -1,5 +1,5 @@
 import { a as e, t } from "./chunks/parse-B6ioEZoO.js";
-import { n } from "./chunks/merge-DAsbGjX2.js";
+import { n } from "./chunks/merge-CMI9kl--.js";
 import { SplitText as r } from "gsap/SplitText";
 // src/lib/plugins/split-text.ts
 var i = [

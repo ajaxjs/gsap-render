@@ -1,6 +1,7 @@
 import { gsap } from './gsap'
 import { buildTree, type BuildContext, type PluginRuntime } from './build'
 import { configureGsap } from './gsap'
+import { InteractionController } from './interactions'
 import { isPlainObject } from './parse'
 import { instantiate, registerPlugin, registeredPlugins } from './registry'
 import { scan, type ScanResult } from './scan'
@@ -13,7 +14,22 @@ export { mergeAttrs } from './merge'
 
 const instances = new WeakMap<Element, GsapRender>()
 
-const RESERVED = ['from', 'to', 'from-to', 'timeline', 'config', 'at']
+const RESERVED = [
+  'from',
+  'to',
+  'from-to',
+  'timeline',
+  'config',
+  'at',
+  'hover',
+  'press',
+  'click',
+  'show',
+  'hide',
+  'hover-fire',
+  'press-fire',
+  'click-fire',
+]
 
 export class GsapRender {
   readonly root!: Element
@@ -33,6 +49,8 @@ export class GsapRender {
   private suppressAutoPlay = false
   private refreshing = false
   private pendingEvents: Array<[string, (...args: any[]) => void]> = []
+  private interactions: InteractionController | null = null
+  private layoutTimer = 0
 
   constructor(target: string | Element, options: Options = {}) {
     this.options = options
@@ -245,12 +263,28 @@ export class GsapRender {
           /* 适配器刷新失败不影响主流程 */
         }
       }
+
+      this.interactions?.destroy()
+      this.interactions = new InteractionController(
+        this.root,
+        this.scanResult,
+        this.warn,
+        config.defaults,
+        this.scheduleLayout,
+      )
+      this.interactions.init()
     })
 
     return this
   }
 
   private teardown(): void {
+    if (this.layoutTimer) {
+      window.clearTimeout(this.layoutTimer)
+      this.layoutTimer = 0
+    }
+    this.interactions?.destroy()
+    this.interactions = null
     for (const runtime of this.plugins) {
       try {
         runtime.impl.destroy?.()
@@ -266,6 +300,32 @@ export class GsapRender {
     this.ctx = gsap.context(() => {})
     for (const key of Object.keys(this.timelines)) delete this.timelines[key]
     this.built = false
+  }
+
+  private hasSplit(): boolean {
+    for (const el of this.scanResult.order) {
+      const attrs = this.scanResult.attrs.get(el)
+      if (!attrs) continue
+      if ('split' in attrs || Object.keys(attrs).some((key) => key.startsWith('split-'))) return true
+    }
+    return false
+  }
+
+  private scheduleLayout = (): void => {
+    if (typeof window === 'undefined' || this.destroyed) return
+    if (this.layoutTimer) window.clearTimeout(this.layoutTimer)
+    this.layoutTimer = window.setTimeout(() => {
+      this.layoutTimer = 0
+      if (this.destroyed) return
+      for (const runtime of this.plugins) {
+        try {
+          runtime.impl.layout?.()
+        } catch {
+          /* ignore */
+        }
+      }
+      if (this.hasSplit()) this.refresh()
+    }, 80)
   }
 
   private handleResplit = (): void => {

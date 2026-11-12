@@ -97,6 +97,9 @@ var o = {
 			refresh() {
 				o();
 			},
+			layout() {
+				o();
+			},
 			destroy() {
 				for (let e of t) e.kill();
 				t.length = 0, o();

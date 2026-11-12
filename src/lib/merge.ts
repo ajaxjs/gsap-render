@@ -7,6 +7,8 @@ export interface TweenSpec {
   method: TweenMethod
   vars: Vars
   fromVars?: Vars
+  /** 数组写法：按顺序播放的步骤 */
+  steps?: Vars[]
 }
 
 /** 时序键统一归 toVars（GSAP 的 fromTo 只从第二个参数读时序） */
@@ -103,11 +105,36 @@ function mergeFromTo(
 const isFilledObject = (value: unknown): value is Record<string, unknown> =>
   isPlainObject(value) && Object.keys(value).length > 0
 
+/** 数组写法：非空、且每一项都是普通对象 */
+export function toSteps(value: unknown): Vars[] | null {
+  if (!Array.isArray(value) || value.length === 0) return null
+  if (!value.every(isPlainObject)) return null
+  return value as Vars[]
+}
+
 /** 元素级 from / to / from-to → 补间描述 */
 export function mergeAttrs(attrs: AttrMap, warn: Warmer, el: Element): TweenSpec[] {
-  const from = attrs.from?.value
+  let from = attrs.from?.value
   const to = attrs.to?.value
   const fromTo = attrs['from-to']?.value
+
+  if (Array.isArray(from)) {
+    warn.warn('W507', el, 'from 不支持数组写法，已忽略', 'from')
+    from = undefined
+  }
+
+  if (Array.isArray(to)) {
+    const steps = toSteps(to)
+    if (!steps) {
+      warn.warn('W505', el, 'to 数组必须是非空对象数组，已忽略', 'to')
+      return []
+    }
+    if (isFilledObject(from)) {
+      warn.warn('W507', el, 'to 使用数组时不能再写 from，from 已忽略', 'to')
+    }
+    const sanitized = steps.map((step) => sanitize({ ...step } as Vars, el, 'to', warn))
+    return [{ method: 'to', vars: sanitized[0] as Vars, steps: sanitized }]
+  }
 
   if (fromTo !== undefined) {
     if (!Array.isArray(fromTo) || fromTo.length !== 2 || !isPlainObject(fromTo[0]) || !isPlainObject(fromTo[1])) {

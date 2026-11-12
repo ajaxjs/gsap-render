@@ -179,6 +179,10 @@ export const ScrollTriggerRender: RenderPlugin = {
         scheduleRefresh()
       },
 
+      layout(): void {
+        scheduleRefresh()
+      },
+
       destroy(): void {
         for (const trigger of triggers) trigger.kill()
         triggers.length = 0
