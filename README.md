@@ -53,6 +53,18 @@ npm run build:lib  # ESM + UMD（dist-lib/，GSAP 外置）
 
 GSAP 是 peer 依赖（`>=3.13`），**一个页面只能有一份**。三种方式任选其一。
 
+### 0. 单文件完整版（最省事）
+
+```html
+<script src="https://cdn.jsdelivr.net/gh/ajaxjs/gsap-render@v0.3.0/dist-lib/gsap-pack.umd.js"></script>
+<script>
+  const gs = new GsapRender('#stage')
+  gs.play()
+</script>
+```
+
+`gsap-pack.umd.js` 内置 GSAP、ScrollTrigger、SplitText 和三个适配器，并且已经自动 `registerPlugin` / `register`，全局名就是 `GsapRender`。约 156 KB（gzip ≈ 55 KB），适合直接 `<script>` 引用或本地自托管。
+
 ### 1. 打包器（npm / GitHub）
 
 ```bash
@@ -85,7 +97,7 @@ gs.play()
 <script src="https://cdn.jsdelivr.net/npm/gsap@3.15.1/dist/ScrollTrigger.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/gsap@3.15.1/dist/SplitText.min.js"></script>
 <!-- 3. 渲染器 -->
-<script src="https://cdn.jsdelivr.net/gh/ajaxjs/gsap-render@v0.2.2/dist-lib/gsap-render.umd.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/ajaxjs/gsap-render@v0.3.0/dist-lib/gsap-render.umd.js"></script>
 
 <div id="stage" timeline>
   <h1 from="{opacity:0, y:-40}">Hello</h1>
@@ -115,8 +127,8 @@ UMD 构建不会打包 GSAP，运行时直接读 `window.gsap` / `window.SplitTe
 </script>
 
 <script type="module">
-  import { GsapRender } from 'https://cdn.jsdelivr.net/gh/ajaxjs/gsap-render@v0.2.2/dist-lib/gsap-render.es.js'
-  import { ScrollTriggerRender } from 'https://cdn.jsdelivr.net/gh/ajaxjs/gsap-render@v0.2.2/dist-lib/scroll-trigger.es.js'
+  import { GsapRender } from 'https://cdn.jsdelivr.net/gh/ajaxjs/gsap-render@v0.3.0/dist-lib/gsap-render.es.js'
+  import { ScrollTriggerRender } from 'https://cdn.jsdelivr.net/gh/ajaxjs/gsap-render@v0.3.0/dist-lib/scroll-trigger.es.js'
 
   const gs = new GsapRender('#stage')
 </script>

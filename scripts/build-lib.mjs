@@ -71,4 +71,25 @@ await build({
   },
 })
 
+await build({
+  ...shared,
+  build: {
+    outDir: 'dist-lib',
+    emptyOutDir: false,
+    minify: true,
+    lib: {
+      entry: resolve(root, 'src/lib/pack.ts'),
+      name: 'GsapRender',
+      formats: ['umd'],
+      fileName: () => 'gsap-pack.umd.js',
+    },
+    rollupOptions: {
+      output: {
+        exports: 'default',
+        entryFileNames: 'gsap-pack.umd.js',
+      },
+    },
+  },
+})
+
 console.log('[build:lib] dist-lib ready')
