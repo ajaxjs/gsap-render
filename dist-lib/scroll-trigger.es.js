@@ -1,7 +1,7 @@
 import { a as e, t } from "./chunks/parse-B6ioEZoO.js";
-import { ScrollTrigger as n } from "gsap/ScrollTrigger";
+import * as n from "gsap/ScrollTrigger";
 // src/lib/plugins/scroll-trigger.ts
-var r = /* @__PURE__ */ new Set([
+var r = n.default ?? n.ScrollTrigger ?? n, i = /* @__PURE__ */ new Set([
 	"trigger",
 	"scroller",
 	"start",
@@ -18,7 +18,7 @@ var r = /* @__PURE__ */ new Set([
 	"anticipatePin",
 	"fastScrollEnd"
 ]);
-function i(e) {
+function a(e) {
 	let t = e.el.ownerDocument.defaultView;
 	if (!t) return;
 	if (t.getComputedStyle(e.el).position === "fixed") {
@@ -34,20 +34,20 @@ function i(e) {
 		n = n.parentElement;
 	}
 }
-function a(e) {
+function o(e) {
 	let n = e.attrs.scroll;
 	if (!t(n)) return e.warn("W205", "scroll 必须是对象，已跳过", "scroll"), null;
-	let a = {};
-	for (let [t, i] of Object.entries(n)) r.has(t) ? a[t] = i : e.warn("W205", `未知的 ScrollTrigger 配置 "${t}"，已忽略`, "scroll");
-	if (a.trigger === void 0) a.trigger = e.el;
-	else if (typeof a.trigger == "string") {
-		if (a.trigger === "self") a.trigger = e.el;
+	let r = {};
+	for (let [t, a] of Object.entries(n)) i.has(t) ? r[t] = a : e.warn("W205", `未知的 ScrollTrigger 配置 "${t}"，已忽略`, "scroll");
+	if (r.trigger === void 0) r.trigger = e.el;
+	else if (typeof r.trigger == "string") {
+		if (r.trigger === "self") r.trigger = e.el;
 		else {
-			let t = e.root.querySelector(a.trigger);
-			t ? a.trigger = t : (e.warn("W205", `trigger 选择器找不到元素 "${a.trigger}"，回退到自身`, "scroll"), a.trigger = e.el);
+			let t = e.root.querySelector(r.trigger);
+			t ? r.trigger = t : (e.warn("W205", `trigger 选择器找不到元素 "${r.trigger}"，回退到自身`, "scroll"), r.trigger = e.el);
 		}
 	}
-	a.scrub !== void 0 && typeof a.scrub != "boolean" && typeof a.scrub != "number" && (e.warn("W205", "scrub 只能是 true/false 或数字，已忽略", "scroll"), delete a.scrub), a.scrub && a.toggleActions && (e.warn("W203", "scrub 模式下 toggleActions 不生效，已忽略", "scroll"), delete a.toggleActions), a.snap !== void 0 && typeof a.snap != "number" && !Array.isArray(a.snap) && (e.warn("W205", "snap 只能是数字或数组，已忽略", "scroll"), delete a.snap);
+	r.scrub !== void 0 && typeof r.scrub != "boolean" && typeof r.scrub != "number" && (e.warn("W205", "scrub 只能是 true/false 或数字，已忽略", "scroll"), delete r.scrub), r.scrub && r.toggleActions && (e.warn("W203", "scrub 模式下 toggleActions 不生效，已忽略", "scroll"), delete r.toggleActions), r.snap !== void 0 && typeof r.snap != "number" && !Array.isArray(r.snap) && (e.warn("W205", "snap 只能是数字或数组，已忽略", "scroll"), delete r.snap);
 	for (let t of [
 		"pin",
 		"pinSpacing",
@@ -55,56 +55,56 @@ function a(e) {
 		"horizontal",
 		"invalidateOnRefresh",
 		"fastScrollEnd"
-	]) a[t] !== void 0 && typeof a[t] != "boolean" && (e.warn("W205", `${t} 必须是布尔值，已忽略`, "scroll"), delete a[t]);
-	if (a.markers === void 0 && (a.markers = e.debug), a.scroller === void 0) {
+	]) r[t] !== void 0 && typeof r[t] != "boolean" && (e.warn("W205", `${t} 必须是布尔值，已忽略`, "scroll"), delete r[t]);
+	if (r.markers === void 0 && (r.markers = e.debug), r.scroller === void 0) {
 		let t = e.el.ownerDocument.defaultView;
-		t && (a.scroller = t);
-	} else if (typeof a.scroller == "string" && a.scroller !== "window") {
-		let t = e.root.querySelector(a.scroller);
-		t ? a.scroller = t : (e.warn("W205", `scroller 选择器找不到元素 "${a.scroller}"，回退到默认 window`, "scroll"), delete a.scroller);
+		t && (r.scroller = t);
+	} else if (typeof r.scroller == "string" && r.scroller !== "window") {
+		let t = e.root.querySelector(r.scroller);
+		t ? r.scroller = t : (e.warn("W205", `scroller 选择器找不到元素 "${r.scroller}"，回退到默认 window`, "scroll"), delete r.scroller);
 	}
-	return a.pin && i(e), a;
+	return r.pin && a(e), r;
 }
-var o = {
+var s = {
 	id: "scroll-trigger",
 	attrs: ["scroll"],
 	owns: ["scroll"],
 	priority: 10,
 	requires: ["ScrollTrigger"],
 	create() {
-		e.registerPlugin(n);
-		let t = [], r = !1, i = !1, o = () => {
-			r || (r = !0, (typeof window < "u" && typeof window.requestAnimationFrame == "function" ? window.requestAnimationFrame.bind(window) : (e) => setTimeout(() => e(0), 16))(() => {
-				r = !1, n.refresh();
+		e.registerPlugin(r);
+		let t = [], n = !1, i = !1, a = () => {
+			n || (n = !0, (typeof window < "u" && typeof window.requestAnimationFrame == "function" ? window.requestAnimationFrame.bind(window) : (e) => setTimeout(() => e(0), 16))(() => {
+				n = !1, r.refresh();
 			}));
 		}, s = () => {
 			if (i) return;
 			i = !0;
 			let e = typeof document < "u" ? document.fonts : void 0;
-			e?.ready && e.ready.then(() => o()).catch(() => void 0);
+			e?.ready && e.ready.then(() => a()).catch(() => void 0);
 		};
 		return {
 			resolve(e) {
 				e.el === e.root && e.attrs.scroll !== void 0 && e.warn("W208", "根元素不支持 scroll，请把 scroll 放到内部内容容器上", "scroll");
 			},
 			mount(n) {
-				let r = a(n);
+				let r = o(n);
 				if (!r) return !1;
 				n.nested && n.warn("W202", "scroll 嵌套在另一个 scroll 内部，内层独立触发", "scroll"), "at" in n.attrs && n.warn("W201", "scroll 节点不参与父时间轴，at 已忽略", "at"), n.node.paused() && (n.warn("W204", "scroll 节点不接受 paused，已由滚动接管", "scroll"), n.node.paused(!1));
 				let i = e.timeline({ scrollTrigger: r });
-				return i.add(n.node, 0), i.scrollTrigger && t.push(i.scrollTrigger), n.el.id && (n.timelines[n.el.id] = i), s(), o(), !0;
+				return i.add(n.node, 0), i.scrollTrigger && t.push(i.scrollTrigger), n.el.id && (n.timelines[n.el.id] = i), s(), a(), !0;
 			},
 			refresh() {
-				o();
+				a();
 			},
 			layout() {
-				o();
+				a();
 			},
 			destroy() {
 				for (let e of t) e.kill();
-				t.length = 0, o();
+				t.length = 0, a();
 			}
 		};
 	}
 };
-export { o as ScrollTriggerRender, o as default };
+export { s as ScrollTriggerRender, s as default };

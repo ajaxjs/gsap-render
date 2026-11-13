@@ -1,7 +1,15 @@
 import { gsap } from '../gsap'
-import { ScrollTrigger } from 'gsap/ScrollTrigger'
+import * as ScrollTriggerModule from 'gsap/ScrollTrigger'
 import { isPlainObject } from '../parse'
 import type { MountContext, PluginImpl, RenderPlugin } from '../types'
+
+/**
+ * UMD 场景下 window.ScrollTrigger 是类本身，而 ESM 下是模块命名空间，
+ * 这里做一次兼容解析，避免读到 undefined。
+ */
+const ScrollTrigger = ((ScrollTriggerModule as unknown as { default?: unknown }).default ??
+  (ScrollTriggerModule as unknown as { ScrollTrigger?: unknown }).ScrollTrigger ??
+  ScrollTriggerModule) as { refresh(): void }
 
 const KNOWN_KEYS = new Set([
   'trigger',

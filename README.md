@@ -85,7 +85,7 @@ gs.play()
 <script src="https://cdn.jsdelivr.net/npm/gsap@3.15.1/dist/ScrollTrigger.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/gsap@3.15.1/dist/SplitText.min.js"></script>
 <!-- 3. 渲染器 -->
-<script src="https://cdn.jsdelivr.net/gh/ajaxjs/gsap-render@v0.2.1/dist-lib/gsap-render.umd.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/ajaxjs/gsap-render@v0.2.2/dist-lib/gsap-render.umd.js"></script>
 
 <div id="stage" timeline>
   <h1 from="{opacity:0, y:-40}">Hello</h1>
@@ -115,8 +115,8 @@ UMD 构建不会打包 GSAP，运行时直接读 `window.gsap` / `window.SplitTe
 </script>
 
 <script type="module">
-  import { GsapRender } from 'https://cdn.jsdelivr.net/gh/ajaxjs/gsap-render@v0.2.1/dist-lib/gsap-render.es.js'
-  import { ScrollTriggerRender } from 'https://cdn.jsdelivr.net/gh/ajaxjs/gsap-render@v0.2.1/dist-lib/scroll-trigger.es.js'
+  import { GsapRender } from 'https://cdn.jsdelivr.net/gh/ajaxjs/gsap-render@v0.2.2/dist-lib/gsap-render.es.js'
+  import { ScrollTriggerRender } from 'https://cdn.jsdelivr.net/gh/ajaxjs/gsap-render@v0.2.2/dist-lib/scroll-trigger.es.js'
 
   const gs = new GsapRender('#stage')
 </script>

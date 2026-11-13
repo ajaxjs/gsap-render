@@ -15,28 +15,34 @@ export const inViewDemo: Demo = {
     <p class="hint">在预览区域里滚动鼠标滚轮</p>
   </section>
 
-  <section class="panel" in-view from="{opacity:0, y:40}">
-    <span class="tag">01 · once</span>
-    <h2>进入视口播一次</h2>
-    <p>默认 once:true，播完就 unobserve，滚回来不会重播。</p>
+  <section class="panel">
+    <div in-view from="{opacity:0, x:-140}">
+      <span class="tag">01 · once</span>
+      <h2>进入视口播一次</h2>
+      <p>默认 once:true，播完就 unobserve，滚回来不会重播。</p>
+    </div>
   </section>
 
-  <section class="panel" in-view="{once:false, reverse:true}" from="{opacity:0, x:-60}">
-    <span class="tag">02 · reverse</span>
-    <h2>离开时反向</h2>
-    <p>once:false + reverse:true：滚回去会回到起点。</p>
+  <section class="panel">
+    <div in-view="{once:false, reverse:true, rootMargin:'-20% 0px -20% 0px'}" from="{opacity:0, x:-160}">
+      <span class="tag">02 · reverse</span>
+      <h2>离开时反向</h2>
+      <p>once:false + reverse:true：滚回去会回到起点。</p>
+    </div>
   </section>
 
-  <section class="panel" in-view="{rootMargin:'0px 0px -20% 0px'}" timeline>
-    <span class="tag">03 · timeline</span>
-    <h2 from="{opacity:0, y:20}">子树照常串行</h2>
-    <div class="grid" timeline="{stagger:0.08}">
-      <div class="card" from="{opacity:0, y:40}">01</div>
-      <div class="card" from="{opacity:0, y:40}">02</div>
-      <div class="card" from="{opacity:0, y:40}">03</div>
-      <div class="card" from="{opacity:0, y:40}">04</div>
-      <div class="card" from="{opacity:0, y:40}">05</div>
-      <div class="card" from="{opacity:0, y:40}">06</div>
+  <section class="panel">
+    <div in-view="{rootMargin:'0px 0px -20% 0px'}" timeline>
+      <span class="tag">03 · timeline</span>
+      <h2 from="{opacity:0, y:20}">子树照常串行</h2>
+      <div class="grid" timeline="{stagger:0.08}">
+        <div class="card" from="{opacity:0, y:40}">01</div>
+        <div class="card" from="{opacity:0, y:40}">02</div>
+        <div class="card" from="{opacity:0, y:40}">03</div>
+        <div class="card" from="{opacity:0, y:40}">04</div>
+        <div class="card" from="{opacity:0, y:40}">05</div>
+        <div class="card" from="{opacity:0, y:40}">06</div>
+      </div>
     </div>
   </section>
 

@@ -1,9 +1,24 @@
 import { gsap } from '../gsap'
-import { SplitText } from 'gsap/SplitText'
+import * as SplitTextModule from 'gsap/SplitText'
 import { mergePhase } from '../merge'
 import { isPlainObject } from '../parse'
 import type { PluginImpl, RenderPlugin, ResolveContext } from '../types'
 import type { Warmer } from '../warn'
+
+interface SplitTextHandle {
+  lines: Element[]
+  words: Element[]
+  chars: Element[]
+  kill?(): void
+  revert(): void
+}
+
+/** UMD 下 window.SplitText 是类本身，ESM 下是命名空间，做一次兼容解析 */
+const SplitText = ((SplitTextModule as unknown as { default?: unknown }).default ??
+  (SplitTextModule as unknown as { SplitText?: unknown }).SplitText ??
+  SplitTextModule) as {
+  create(target: Element, vars?: Record<string, unknown>): SplitTextHandle
+}
 
 const TYPES = ['lines', 'words', 'chars'] as const
 type SplitType = (typeof TYPES)[number]
@@ -28,7 +43,7 @@ export const SplitTextRender: RenderPlugin = {
   requires: ['SplitText'],
   create(): PluginImpl {
     gsap.registerPlugin(SplitText)
-    const instances = new Map<Element, SplitText>()
+    const instances = new Map<Element, SplitTextHandle>()
 
     return {
       resolve(ctx: ResolveContext): void {
@@ -91,7 +106,7 @@ export const SplitTextRender: RenderPlugin = {
         el.setAttribute('data-gsap-split', '')
         el.setAttribute('data-gsap-pending', '')
 
-        let split: SplitText
+        let split: SplitTextHandle
         let first = true
         try {
           split = SplitText.create(el, {
